@@ -16,7 +16,7 @@ public class Intake extends SubsystemBase {
   CANSparkFlex intakeMotor;
   /** Creates a new Intake. */
   public Intake() {
-    intakeMotor = new CANSparkFlex(0, MotorType.kBrushless);
+    intakeMotor = new CANSparkFlex(31, MotorType.kBrushless);
     intakeMotor.setIdleMode(IdleMode.kCoast);
     createShuffleboard();
   }
@@ -24,11 +24,11 @@ public class Intake extends SubsystemBase {
   public void createShuffleboard() { 
     ShuffleboardTab tab = Shuffleboard.getTab("INTAKE");
     tab.add("INTAKE", this);
-    tab.addNumber("INTAKE SPEED", this::getIntakeSpeed);
+    tab.addNumber("INTAKE SPEED (PERCENTAGE)", this::getIntakeSpeed);
   }
 
   public double getIntakeSpeed() {
-    return intakeMotor.get();
+    return intakeMotor.get() * 100;
   }
 
   public void stopIntake() {

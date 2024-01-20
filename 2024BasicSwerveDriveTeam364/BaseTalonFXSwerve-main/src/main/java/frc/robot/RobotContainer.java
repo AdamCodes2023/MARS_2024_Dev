@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.autos.*;
@@ -23,10 +24,12 @@ public class RobotContainer {
     private final Joystick steering = new Joystick(1);
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, 8);
-    private final JoystickButton robotCentric = new JoystickButton(driver, 9);
-    private final JoystickButton runIntakeButton = new JoystickButton(driver, 3);
-    private final JoystickButton runOutakeButton = new JoystickButton(driver, 4);
+    private final JoystickButton turtleButton = new JoystickButton(driver, 3);
+    private final JoystickButton turboButton = new JoystickButton(driver, 1);
+    private final JoystickButton zeroGyro = new JoystickButton(driver, 9);
+    private final JoystickButton robotCentric = new JoystickButton(driver, 5);
+    private final JoystickButton runIntakeButton = new JoystickButton(driver, 6);
+    private final JoystickButton runOutakeButton = new JoystickButton(driver, 7);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -37,9 +40,9 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getY(), 
-                () -> -driver.getX(), 
-                () -> -steering.getX(), 
+                () -> -driver.getY() * 0.75, 
+                () -> -driver.getX() * 0.75, 
+                () -> -steering.getX() * 0.75, 
                 () -> robotCentric.getAsBoolean()
             )
         );
@@ -56,10 +59,30 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
+        turtleButton.whileTrue(
+            new TeleopSwerve(
+                s_Swerve, 
+                () -> -driver.getY() * 0.40, 
+                () -> -driver.getX() * 0.40, 
+                () -> -steering.getX() * 0.40, 
+                () -> robotCentric.getAsBoolean()
+            )
+        );
+
+        turboButton.whileTrue(
+            new TeleopSwerve(
+                s_Swerve, 
+                () -> -driver.getY() * 0.90, 
+                () -> -driver.getX() * 0.90, 
+                () -> -steering.getX() * 0.90, 
+                () -> robotCentric.getAsBoolean()
+            )
+        );
+
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        runIntakeButton.onTrue(new InstantCommand(() -> s_Intake.runIntake(-0.7)));
+        runIntakeButton.whileTrue(new RepeatCommand(new InstantCommand(() -> s_Intake.runIntake(-((driver.getZ() * -1 + 1) * 0.5)))));
         runIntakeButton.onFalse(new InstantCommand(() -> s_Intake.stopIntake()));
-        runOutakeButton.onTrue(new InstantCommand(() -> s_Intake.runIntake(0.7)));
+        runOutakeButton.whileTrue(new RepeatCommand(new InstantCommand(() -> s_Intake.runIntake((driver.getZ() * -1 + 1) * 0.5))));
         runOutakeButton.onFalse(new InstantCommand(() -> s_Intake.stopIntake()));
     }
 
