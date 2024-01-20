@@ -20,28 +20,26 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(0);
-
-    /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
+    private final Joystick steering = new Joystick(1);
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton zeroGyro = new JoystickButton(driver, 8);
+    private final JoystickButton robotCentric = new JoystickButton(driver, 9);
+    private final JoystickButton runIntakeButton = new JoystickButton(driver, 3);
+    private final JoystickButton runOutakeButton = new JoystickButton(driver, 4);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-
+    private final Intake s_Intake = new Intake();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
-                () -> -driver.getRawAxis(rotationAxis), 
+                () -> -driver.getY(), 
+                () -> -driver.getX(), 
+                () -> -steering.getX(), 
                 () -> robotCentric.getAsBoolean()
             )
         );
@@ -59,6 +57,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        runIntakeButton.onTrue(new InstantCommand(() -> s_Intake.runIntake(-0.7)));
+        runIntakeButton.onFalse(new InstantCommand(() -> s_Intake.stopIntake()));
+        runOutakeButton.onTrue(new InstantCommand(() -> s_Intake.runIntake(0.7)));
+        runOutakeButton.onFalse(new InstantCommand(() -> s_Intake.stopIntake()));
     }
 
     /**
