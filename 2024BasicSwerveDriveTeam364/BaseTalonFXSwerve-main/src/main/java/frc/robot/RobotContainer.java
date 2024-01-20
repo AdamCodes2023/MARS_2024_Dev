@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.autos.*;
@@ -26,6 +25,7 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton turtleButton = new JoystickButton(driver, 3);
     private final JoystickButton turboButton = new JoystickButton(driver, 1);
+    private final JoystickButton xStanceButton = new JoystickButton(driver, 4);
     private final JoystickButton zeroGyro = new JoystickButton(driver, 9);
     private final JoystickButton robotCentric = new JoystickButton(driver, 5);
     private final JoystickButton runIntakeButton = new JoystickButton(driver, 6);
@@ -79,11 +79,12 @@ public class RobotContainer {
             )
         );
 
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        runIntakeButton.whileTrue(new RepeatCommand(new InstantCommand(() -> s_Intake.runIntake(-((driver.getZ() * -1 + 1) * 0.5)))));
-        runIntakeButton.onFalse(new InstantCommand(() -> s_Intake.stopIntake()));
-        runOutakeButton.whileTrue(new RepeatCommand(new InstantCommand(() -> s_Intake.runIntake((driver.getZ() * -1 + 1) * 0.5))));
-        runOutakeButton.onFalse(new InstantCommand(() -> s_Intake.stopIntake()));
+        xStanceButton.onTrue(Commands.runOnce(() -> s_Swerve.setXStance()));
+        zeroGyro.onTrue(Commands.runOnce(() -> s_Swerve.zeroHeading()));
+        runIntakeButton.onTrue(Commands.run(() -> s_Intake.runIntake(-((driver.getZ() * -1 + 1) * 0.5))));
+        runIntakeButton.onFalse(Commands.runOnce(() -> s_Intake.stopIntake()));
+        runOutakeButton.whileTrue(Commands.run(() -> s_Intake.runIntake((driver.getZ() * -1 + 1) * 0.5)));
+        runOutakeButton.onFalse(Commands.runOnce(() -> s_Intake.stopIntake()));
     }
 
     /**

@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,6 +23,7 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public PigeonIMU gyro;
+    private boolean brakeMode;
 
     public Swerve() {
         gyro = new PigeonIMU(Constants.Swerve.pigeonID);
@@ -115,6 +117,61 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+   * Sets the swerve modules in the x-stance orientation. In this orientation the wheels are aligned
+   * to make an 'X'. This makes it more difficult for other robots to push the robot, which is
+   * useful when shooting.
+   */
+  public void setXStance() {
+    ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    SwerveModuleState[] states = Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+    states[0].angle = new Rotation2d(Math.PI / 2 - Math.atan(Constants.Swerve.trackWidth / Constants.Swerve.wheelBase));
+    states[1].angle = new Rotation2d(Math.PI / 2 + Math.atan(Constants.Swerve.trackWidth / Constants.Swerve.wheelBase));
+    states[2].angle = new Rotation2d(Math.PI / 2 + Math.atan(Constants.Swerve.trackWidth / Constants.Swerve.wheelBase));
+    states[3].angle = new Rotation2d(3.0 / 2.0 * Math.PI - Math.atan(Constants.Swerve.trackWidth / Constants.Swerve.wheelBase));
+    for (SwerveModule mod : mSwerveMods) {
+      mod.setDesiredState(states[mod.moduleNumber], true);
+    }
+  }
+
+    /**
+   * If the robot is enabled and brake mode is not enabled, enable it. If the robot is disabled, has
+   * stopped moving, and brake mode is enabled, disable it.
+   */
+  private void updateBrakeMode() {
+    if (DriverStation.isEnabled() && !brakeMode) {
+      brakeMode = true;
+      setBrakeMode(true);
+
+    } else {
+      boolean stillMoving = false;
+      for (SwerveModule mod : mSwerveMods) {
+        if (Math.abs(mod.getState().speedMetersPerSecond) > 0.05) {
+          stillMoving = true;
+        }
+      }
+
+      // if (brakeMode && !stillMoving) {
+      // brakeMode = false;
+      // setBrakeMode(false);
+      // }
+    }
+
+    if (DriverStation.isDisabled()) {
+      setXStance();
+      brakeMode = true;
+      setBrakeMode(true);
+    }
+  }
+
+  private void setBrakeMode(boolean enable) {
+    for (SwerveModule mod : mSwerveMods) {
+      mod.setAngleBrakeMode(enable);
+      mod.setDriveBrakeMode(enable);
+    }
+  }
+
+
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
@@ -126,5 +183,7 @@ public class Swerve extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("Gyro Heading", this.getHeading().getDegrees());
+        // update the brake mode based on the robot's velocity and state (enabled/disabled)
+        updateBrakeMode();
     }
 }

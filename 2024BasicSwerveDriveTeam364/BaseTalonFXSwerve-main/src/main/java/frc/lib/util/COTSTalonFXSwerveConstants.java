@@ -216,18 +216,18 @@ public class COTSTalonFXSwerveConstants {
         public static final class MK4{
             /** Swerve Drive Specialties - MK4 Module (Falcon 500)*/
             public static final COTSTalonFXSwerveConstants Falcon500(double driveGearRatio){
-                double wheelDiameter = Units.inchesToMeters(4.0);
+                double wheelDiameter = 0.10033;
         
                 /** 12.8 : 1 */
-                double angleGearRatio = (12.8 / 1.0);
+                double angleGearRatio = 1 / ((15.0 / 32.0) * (10.0 / 60.0));
         
-                double angleKP = 1.0;
+                double angleKP = 0.6;
                 double angleKI = 0.0;
-                double angleKD = 0.0;
+                double angleKD = 12.0;
         
                 InvertedValue driveMotorInvert = InvertedValue.CounterClockwise_Positive;
-                InvertedValue angleMotorInvert = InvertedValue.CounterClockwise_Positive;
-                SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;
+                InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
+                SensorDirectionValue cancoderInvert = SensorDirectionValue.Clockwise_Positive;
                 return new COTSTalonFXSwerveConstants(wheelDiameter, angleGearRatio, driveGearRatio, angleKP, angleKI, angleKD, driveMotorInvert, angleMotorInvert, cancoderInvert);
             }
 
@@ -252,7 +252,7 @@ public class COTSTalonFXSwerveConstants {
                 /** SDS MK4 - (8.14 : 1) */
                 public static final double L1 = (8.14 / 1.0);
                 /** SDS MK4 - (6.75 : 1) */
-                public static final double L2 = (6.75 / 1.0);
+                public static final double L2 = 1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0));
                 /** SDS MK4 - (6.12 : 1) */
                 public static final double L3 = (6.12 / 1.0);
                 /** SDS MK4 - (5.14 : 1) */

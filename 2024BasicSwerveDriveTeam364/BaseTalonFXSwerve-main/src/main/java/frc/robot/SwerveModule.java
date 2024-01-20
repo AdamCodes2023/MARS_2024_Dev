@@ -89,4 +89,20 @@ public class SwerveModule {
             Rotation2d.fromRotations(mAngleMotor.getPosition().getValue())
         );
     }
+
+    /**
+   * Set the brake mode of the drive motor.
+   *
+   * @param enable if true, the drive motor will be set to brake mode; if false, coast mode.
+   */
+  public void setDriveBrakeMode(boolean enable) {
+  }
+
+  /**
+   * Set the brake mode of the angle motor.
+   *
+   * @param enable if true, the angle motor will be set to brake mode; if false, coast mode.
+   */
+  public void setAngleBrakeMode(boolean enable) {
+  }
 }
