@@ -27,6 +27,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.index.Index;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter_angle.ShooterAngle;
+import frc.robot.subsystems.vision.Vision;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -46,6 +47,7 @@ public class RobotContainer {
   private Index index;
   private Intake intake;
   private ShooterAngle shooterAngle;
+  private Vision vision;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -111,6 +113,7 @@ public class RobotContainer {
             index = new Index();
             //intake = new Intake();
             shooterAngle = new ShooterAngle();
+            //vision = new Vision();
             // NO REV PNEUMATICS HUB YET
             // new Pneumatics(new PneumaticsIORev());
             actionJoystick = new CommandJoystick(1);
@@ -138,6 +141,7 @@ public class RobotContainer {
             index = new Index();
             //intake = new Intake();
             shooterAngle = new ShooterAngle();
+            //vision = new Vision();
             // NO REV PNEUMATICS HUB YET
             // new Pneumatics(new PneumaticsIO() {});
 
@@ -170,6 +174,7 @@ public class RobotContainer {
       index = new Index();
       //intake = new Intake();
       shooterAngle = new ShooterAngle();
+      //vision = new Vision();
       // NO REV PNEUMATICS HUB YET
       // new Pneumatics(new PneumaticsIO() {});
       actionJoystick = new CommandJoystick(1);
@@ -293,9 +298,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // RunOnChargingPad run = new RunOnChargingPad(drivetrain, elevator, elevatorCarriage,
-    // gripperWrist, pneumatics);
-    // return run;
     return autoChooser.get();
   }
 }
