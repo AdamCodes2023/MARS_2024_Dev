@@ -96,4 +96,8 @@ public interface OperatorInterface {
   public default Trigger getNegativeAngleButton() {
     return new Trigger(() -> false);
   }
+
+  public default Trigger getPlayMusicButton() {
+    return new Trigger(() -> false);
+  }
 }

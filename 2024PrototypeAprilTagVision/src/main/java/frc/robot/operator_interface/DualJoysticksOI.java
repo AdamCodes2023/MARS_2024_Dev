@@ -133,4 +133,9 @@ public class DualJoysticksOI implements OperatorInterface {
   public Trigger getNegativeAngleButton() {
     return rotateJoystickButtons[6];
   }
+
+  @Override
+  public Trigger getPlayMusicButton() {
+    return rotateJoystickButtons[4];
+  }
 }

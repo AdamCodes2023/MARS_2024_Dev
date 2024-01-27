@@ -269,6 +269,12 @@ public class RobotContainer {
     oi.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
     oi.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
+    // music
+    /* 
+    oi.getPlayMusicButton().onTrue(Commands.runOnce(drivetrain::playImperialMarch, drivetrain));
+    oi.getPlayMusicButton().onFalse(Commands.runOnce(drivetrain::stopOrchestra, drivetrain));
+    */
+    
     /*
     // run intake
     oi.getIntakeButton().onTrue(Commands.run(() -> intake.runIntake(oi.getIntakeSpeed()), intake));

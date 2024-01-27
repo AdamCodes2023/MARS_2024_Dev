@@ -33,6 +33,9 @@ import frc.lib.team6328.util.TunableNumber;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.music.Orchestra;
+
 /**
  * This subsystem models the robot's drivetrain mechanism. It consists of a four MK4 swerve modules,
  * each with two motors and an encoder. It also consists of a Pigeon which is used to measure the
@@ -110,6 +113,8 @@ public class Drivetrain extends SubsystemBase {
 
   public boolean centerCharge;
 
+  private Orchestra music;
+
   /** Constructs a new DrivetrainSubsystem object. */
   public Drivetrain(
       GyroIO gyroIO,
@@ -122,6 +127,9 @@ public class Drivetrain extends SubsystemBase {
     this.swerveModules[1] = frModule;
     this.swerveModules[2] = blModule;
     this.swerveModules[3] = brModule;
+
+    //this.music = createOrchestra();
+    this.music = null;
 
     this.autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -359,6 +367,22 @@ public class Drivetrain extends SubsystemBase {
 
         break;
     }
+  }
+
+  public Orchestra createOrchestra() {
+    TalonFX instrument = new TalonFX(60);
+    Orchestra orchestra = new Orchestra();
+    orchestra.addInstrument(instrument);
+    orchestra.loadMusic("ImperialMarch.chrp");
+    return orchestra;
+  }
+
+  public void playImperialMarch() {
+    music.play();
+  }
+
+  public void stopOrchestra() {
+    music.stop();
   }
 
   /**
