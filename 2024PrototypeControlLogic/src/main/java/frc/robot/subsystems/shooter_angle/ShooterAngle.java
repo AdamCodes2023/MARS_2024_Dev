@@ -10,13 +10,13 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterAngle extends SubsystemBase {
+  private boolean looking;
   private DigitalInput hardStopTop;
   private DigitalInput hardStopBottom;
   private CANSparkMax angleMotor;
@@ -40,10 +40,14 @@ public class ShooterAngle extends SubsystemBase {
 
   /** Creates a new ShooterAngle. */
   public ShooterAngle() {
-    angleMotor = new CANSparkMax(32, MotorType.kBrushless);
+    looking = true;
+
+    angleMotor = new CANSparkMax(30, MotorType.kBrushless);
     angleMotor.restoreFactoryDefaults();
-    angleMotor.setIdleMode(IdleMode.kBrake);
+    angleMotor.setIdleMode(IdleMode.kCoast);
     absEncoder = angleMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    absEncoder.setInverted(true);
+    absEncoder.setZeroOffset(0.5);
     // absEncoder.setPositionConversionFactor(360.0);
     // relEncoder = angleMotor.getEncoder();
 
@@ -54,9 +58,9 @@ public class ShooterAngle extends SubsystemBase {
     pidControl.setPositionPIDWrappingMinInput(0.0);
 
     // PID coefficients
-    kP = 5e-3;
+    kP = 7.5e-3;
     kI = 1e-6;
-    kD = 0;
+    kD = 1e-5;
     kIz = 0;
     kFF = 0.000156;
     kMaxOutput = 1;
@@ -91,8 +95,8 @@ public class ShooterAngle extends SubsystemBase {
     pidControl.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
     pidControl.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
 
-    hardStopBottom = new DigitalInput(1);
-    hardStopTop = new DigitalInput(2);
+    hardStopBottom = new DigitalInput(2);
+    hardStopTop = new DigitalInput(3);
 
     createShuffleboard();
   }
@@ -101,6 +105,13 @@ public class ShooterAngle extends SubsystemBase {
     ShuffleboardTab tab = Shuffleboard.getTab("SHOOTER_ANGLE");
     tab.add("SHOOTER_ANGLE", this);
     tab.addNumber("SHOOTER_ANGLE_POSITION", this::getShooterAnglePosition);
+    tab.addBoolean("HardStopTop", this::atHardStopTop);
+    tab.addBoolean("HardStopBottom", this::atHardStopBottom);
+    tab.addNumber("Output Current", this::getCurrent);
+  }
+
+  public double getCurrent() {
+    return angleMotor.getOutputCurrent();
   }
 
   public double getShooterAnglePosition() {
@@ -121,40 +132,53 @@ public class ShooterAngle extends SubsystemBase {
     angleMotor.stopMotor();
   }
 
+  public void stopMotorWithInterrupt(boolean interrupted) {
+    angleMotor.stopMotor();
+  }
+
   public void intakePosition() {
-    smartMotionPosition(102/360);
+    smartMotionPosition(181.3/360.0);
   }
 
   public void ampPosition() {
-    smartMotionPosition(135/360);
+    smartMotionPosition(256.0/360.0);
   }
 
   public void speakerPosition() {
-    smartMotionPosition(180/360);
+    smartMotionPosition(180 / 360);
   }
 
   public boolean atIntakeAlignment() {
-    return absEncoder.getPosition() * 360.0 > 100 && absEncoder.getPosition() * 360.0 < 105;
+    return absEncoder.getPosition() * 360.0 > 180.3 && absEncoder.getPosition() * 360.0 < 182.3;
   }
 
   public boolean atAmpAlignment() {
-    return absEncoder.getPosition() * 360.0 > 133 && absEncoder.getPosition() * 360.0 < 138;
+    return absEncoder.getPosition() * 360.0 > 254.0 && absEncoder.getPosition() * 360.0 < 258.0;
   }
 
   public boolean atSpeakerAlignment() {
-    return absEncoder.getPosition() * 360.0 > 178 && absEncoder.getPosition() * 360.0 < 183;
+    return absEncoder.getPosition() * 360.0 > 178.0 && absEncoder.getPosition() * 360.0 < 182.0;
   }
 
   public boolean atHardStopTop() {
-    return hardStopTop.get();
+    return !hardStopTop.get();
   }
 
   public boolean atHardStopBottom() {
-    return hardStopBottom.get();
+    return !hardStopBottom.get();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (atHardStopBottom() || atHardStopTop()) {
+      if (looking) {
+        stopMotor();
+        looking = false;
+      }
+    }
+    else {
+      looking = true;
+    }
   }
 }

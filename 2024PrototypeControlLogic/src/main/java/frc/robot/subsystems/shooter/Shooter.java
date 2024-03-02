@@ -14,7 +14,7 @@ public class Shooter extends SubsystemBase {
   private TalonFX leftShooter, rightShooter;
   /** Creates a new Shooter. */
   public Shooter() {
-    leftShooter = new TalonFX(55);
+    leftShooter = new TalonFX(42);
 
     /* Factory Default all hardware to prevent unexpected behaviour */
     leftShooter.configFactoryDefault();
@@ -83,7 +83,7 @@ public class Shooter extends SubsystemBase {
     leftShooter.setSelectedSensorPosition(
         0.0, ShooterConstants.kPIDLoopIdx, ShooterConstants.kTimeoutMs);
 
-    rightShooter = new TalonFX(56);
+    rightShooter = new TalonFX(41);
 
     /* Factory Default all hardware to prevent unexpected behaviour */
     rightShooter.configFactoryDefault();
@@ -154,8 +154,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runShooter(double speed) {
-    leftShooter.set(ControlMode.Velocity, speed);
-    rightShooter.set(ControlMode.Velocity, -speed);
+    leftShooter.set(ControlMode.Velocity, -speed);
+    rightShooter.set(ControlMode.Velocity, speed);
   }
 
   @Override

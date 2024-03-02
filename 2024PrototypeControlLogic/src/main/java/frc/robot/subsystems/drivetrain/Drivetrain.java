@@ -35,7 +35,6 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
 import frc.robot.subsystems.vision.Vision;
-import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -129,7 +128,8 @@ public class Drivetrain extends SubsystemBase {
 
     this.autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    this.vision = new Vision();
+    // this.vision = new Vision();
+    this.vision = null;
 
     this.centerGravity = new Translation2d(); // default to (0,0)
 

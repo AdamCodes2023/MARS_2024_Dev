@@ -19,31 +19,31 @@ public final class DrivetrainConstants {
   // FIXME: update all CAN IDs
   // FIXME: update all steer offsets
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR =
-      10; // Set front left module drive motor ID
+      11; // Set front left module drive motor ID
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR =
-      11; // Set front left module steer motor ID
+      10; // Set front left module steer motor ID
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER =
       20; // Set front left steer encoder ID  + 180.0
   public static final double FRONT_LEFT_MODULE_STEER_OFFSET =
-      224.03; // FIXME Measure and set front left steer offset
+      51.152; // FIXME Measure and set front left steer offset
 
-  public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 16; // Set front right drive motor ID
-  public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 17; // Set front right steer motor ID
-  public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 23; // Set front right steer encoder ID
+  public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 12; // Set front right drive motor ID
+  public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 13; // Set front right steer motor ID
+  public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 21; // Set front right steer encoder ID
   public static final double FRONT_RIGHT_MODULE_STEER_OFFSET =
-      288.81; // FIXME Measure and set front right steer offset
+      98.965; // FIXME Measure and set front right steer offset
 
   public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 14; // Set back left drive motor ID
   public static final int BACK_LEFT_MODULE_STEER_MOTOR = 15; // Set back left steer motor ID
   public static final int BACK_LEFT_MODULE_STEER_ENCODER = 22; // Set back left steer encoder ID
   public static final double BACK_LEFT_MODULE_STEER_OFFSET =
-      325.28; // FIXME Measure and set back left steer offset
+      196.084; // FIXME Measure and set back left steer offset
 
-  public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 12; // Set back right drive motor ID
-  public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 13; // Set back right steer motor ID
-  public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21; // Set back right steer encoder ID
+  public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 16; // Set back right drive motor ID
+  public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 17; // Set back right steer motor ID
+  public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 23; // Set back right steer encoder ID
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET =
-      328.62; // FIXME Measure and set back right steer offset
+      275.361; // FIXME Measure and set back right steer offset
 
   public static final int PIGEON_ID = 6;
 
@@ -54,7 +54,7 @@ public final class DrivetrainConstants {
    *
    * <p>Should be measured from center to center.
    */
-  public static final double TRACKWIDTH_METERS = Units.inchesToMeters(23.00); // unknown inches
+  public static final double TRACKWIDTH_METERS = Units.inchesToMeters(21.00); // unknown inches
 
   /**
    * The front-to-back distance between the drivetrain wheels.

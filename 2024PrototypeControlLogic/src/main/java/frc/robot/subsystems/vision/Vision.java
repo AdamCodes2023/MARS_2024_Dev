@@ -39,8 +39,8 @@ public class Vision extends SubsystemBase {
 
   public void createShuffleboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("VISION");
-    //tab.add("VISION", this);
-    //tab.addNumber("ANGLE_RECORRECTION", this::aprilTagLock);
+    // tab.add("VISION", this);
+    // tab.addNumber("ANGLE_RECORRECTION", this::aprilTagLock);
   }
 
   public double aprilTagLock() {

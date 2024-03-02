@@ -147,7 +147,7 @@ public class DualJoysticksOI implements OperatorInterface {
   }
 
   @Override
-  public Trigger getBlueLightButton() {
+  public Trigger getShootButton() {
     return rotateJoystickButtons[1];
   }
 
@@ -156,13 +156,13 @@ public class DualJoysticksOI implements OperatorInterface {
     return rotateJoystickButtons[2];
   }
 
-  /* 
+  /*
   @Override
   public Trigger getShootLightButton() {
     return rotateJoystickButtons[3];
   }
   */
-  
+
   @Override
   public Trigger getMarsLightButton() {
     return rotateJoystickButtons[4];

@@ -26,8 +26,12 @@ public class IntakeIn extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    while(!shang.atIntakeAlignment()) {
-      shang.intakePosition();
+    boolean firstTrigger = true;
+    while (!shang.atIntakeAlignment()) {
+      if (firstTrigger) {
+        shang.intakePosition();
+        firstTrigger = false;
+      }
     }
   }
 
@@ -35,19 +39,27 @@ public class IntakeIn extends Command {
   @Override
   public void execute() {
     index.runIndex(0.7);
-    intake.runIntake(0.7);
+    if (!intake.hasGamePiece()) {
+      intake.runIntake(-0.7);
+    }
+    else {
+      intake.stopIntake();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    boolean firstTrigger = true;
     index.stopIndex();
     intake.stopIntake();
-    if (index.hasGamePiece()) {
-      while(!shang.atHardStopBottom()) {
-        shang.setMotorSpeed(-0.2);
+    if (intake.hasGamePiece()) {
+      while (!shang.atHardStopBottom()) {
+        if (firstTrigger) {
+          shang.stopMotor();
+          firstTrigger = false;
+        }
       }
-      shang.stopMotor();
     }
   }
 

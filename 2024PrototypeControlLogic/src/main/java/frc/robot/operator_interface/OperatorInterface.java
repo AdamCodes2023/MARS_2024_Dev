@@ -107,7 +107,7 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  public default Trigger getBlueLightButton() {
+  public default Trigger getShootButton() {
     return new Trigger(() -> false);
   }
 
@@ -115,12 +115,12 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  /* 
+  /*
   public default Trigger getShootLightButton() {
     return new Trigger(() -> false);
   }
   */
-  
+
   public default Trigger getMarsLightButton() {
     return new Trigger(() -> false);
   }

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.team3061.gyro.GyroIO;
@@ -22,6 +22,8 @@ import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.IntakeIn;
+import frc.robot.commands.IntakeOut;
 import frc.robot.commands.Stop;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
@@ -31,10 +33,8 @@ import frc.robot.subsystems.index.Index;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.lift.Lift;
 import frc.robot.subsystems.lights.Lights;
-import frc.robot.subsystems.orchestra.OrchestraPlayer;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter_angle.ShooterAngle;
-import frc.robot.subsystems.vision.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -53,10 +53,10 @@ public class RobotContainer {
   private Index index;
   private Intake intake;
   private Lift lift;
-  //private OrchestraPlayer orchestraPlayer;
+  // private OrchestraPlayer orchestraPlayer;
   private Shooter shooter;
   private ShooterAngle shooterAngle;
-  //private Vision vision;
+  // private Vision vision;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -121,7 +121,7 @@ public class RobotContainer {
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             index = new Index();
             intake = new Intake();
-            //lift = new Lift();
+            // lift = new Lift();
             // orchestraPlayer = new OrchestraPlayer();
             shooter = new Shooter();
             shooterAngle = new ShooterAngle();
@@ -152,7 +152,7 @@ public class RobotContainer {
             drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
             index = new Index();
             intake = new Intake();
-            //lift = new Lift();
+            // lift = new Lift();
             // orchestraPlayer = new OrchestraPlayer();
             shooter = new Shooter();
             shooterAngle = new ShooterAngle();
@@ -188,7 +188,7 @@ public class RobotContainer {
       drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
       index = new Index();
       intake = new Intake();
-      //lift = new Lift();
+      // lift = new Lift();
       // orchestraPlayer = new OrchestraPlayer();
       shooter = new Shooter();
       shooterAngle = new ShooterAngle();
@@ -290,54 +290,70 @@ public class RobotContainer {
     oi.getPlayMusicButton().onFalse(Commands.runOnce(orchestraPlayer::stopMusic, orchestraPlayer));
     */
 
-    /*
+    
     // run intake
-    oi.getIntakeButton().onTrue(Commands.run(() -> intake.runIntake(oi.getIntakeSpeed()), intake));
-    oi.getIntakeButton().onFalse(Commands.runOnce(() -> intake.stopIntake(), intake));
+    //oi.getIntakeButton().onTrue(Commands.run(() -> intake.runIntake(oi.getIntakeSpeed()), intake));
+    //oi.getIntakeButton().onFalse(Commands.runOnce(() -> intake.stopIntake(), intake));
     // run outake
-    oi.getOutakeButton().onTrue(Commands.run(() -> intake.runIntake(oi.getOutakeSpeed()), intake));
-    oi.getOutakeButton().onFalse(Commands.runOnce(() -> intake.stopIntake(), intake));
-    */
+    //oi.getOutakeButton().onTrue(Commands.run(() -> intake.runIntake(oi.getOutakeSpeed()), intake));
+    //oi.getOutakeButton().onFalse(Commands.runOnce(() -> intake.stopIntake(), intake));
 
-    /* 
+  
     // run positive shooter angle
-    // oi.getPositiveAngleButton().onTrue(Commands.runOnce(() -> shooterAngle.setMotorSpeed(0.5),
-    // shooterAngle));
     oi.getPositiveAngleButton()
-        .onTrue(Commands.runOnce(() -> shooterAngle.smartMotionPosition(0.7), shooterAngle));
+        .onTrue(Commands.runOnce(() -> shooterAngle.smartMotionPosition(181.3/360.0), shooterAngle));
     oi.getPositiveAngleButton()
         .onFalse(Commands.runOnce(() -> shooterAngle.stopMotor(), shooterAngle));
     // run negative shooter angle
-    // oi.getNegativeAngleButton().onTrue(Commands.runOnce(() -> shooterAngle.setMotorSpeed(-0.5),
-    // shooterAngle));
     oi.getNegativeAngleButton()
-        .onTrue(Commands.runOnce(() -> shooterAngle.smartMotionPosition(0.2), shooterAngle));
+        .onTrue(Commands.runOnce(() -> shooterAngle.smartMotionPosition(256.0/360.0), shooterAngle));
     oi.getNegativeAngleButton()
-        .onFalse(Commands.runOnce(() -> shooterAngle.stopMotor(), shooterAngle));
-    */
+        .onFalse(new FunctionalCommand(shooterAngle::stopMotor, shooterAngle::intakePosition, shooterAngle::stopMotorWithInterrupt, shooterAngle::atIntakeAlignment));
+
+    
+    Command intakeInCommand = new IntakeIn(index, intake, shooterAngle);
+    Command intakeOutCommand = new IntakeOut(index, intake, shooterAngle);
+    //INTAKE TESTING
+    oi.getIntakeButton()
+        .onTrue(intakeInCommand);
+    oi.getIntakeButton()
+        .onFalse(Commands.runOnce(() -> intakeInCommand.cancel()));
+    
+    oi.getOutakeButton()
+        .onTrue(intakeOutCommand);
+    oi.getOutakeButton()
+        .onFalse(Commands.runOnce(() -> intakeOutCommand.cancel()));
+    
+
+    
+    //SHOOTER TESTING
+    oi.getShootButton().onTrue(Commands.runOnce(() -> shooter.runShooter(5000.0)));
+    oi.getShootButton().onFalse(Commands.runOnce(() -> shooter.runShooter(0.0)));
+
 
     // center on apriltags
-    oi.getAprilTagButton().onTrue(new RepeatCommand(Commands.runOnce(() -> drivetrain.centerOnAprilTag(), drivetrain)));
-    oi.getAprilTagButton().onFalse(drivetrain.getDefaultCommand());
+    // oi.getAprilTagButton().onTrue(new RepeatCommand(Commands.runOnce(() ->
+    // drivetrain.centerOnAprilTag(), drivetrain)));
+    // oi.getAprilTagButton().onFalse(drivetrain.getDefaultCommand());
 
     /* LIGHT TESTING */
-    oi.getBlueLightButton().onTrue(Commands.runOnce(Lights::turnBlue));
-    oi.getBlueLightButton().onFalse(Commands.runOnce(Lights::turnOff));
+    //oi.getBlueLightButton().onTrue(Commands.runOnce(Lights::turnBlue));
+    //oi.getBlueLightButton().onFalse(Commands.runOnce(Lights::turnOff));
 
-    oi.getRedLightButton().onTrue(Commands.runOnce(Lights::turnRed));
-    oi.getRedLightButton().onFalse(Commands.runOnce(Lights::turnOff));
+    //oi.getRedLightButton().onTrue(Commands.runOnce(Lights::turnRed));
+    //oi.getRedLightButton().onFalse(Commands.runOnce(Lights::turnOff));
 
-    //oi.getShootLightButton().onTrue(Commands.runOnce(Lights::turnShoot));
-    //oi.getShootLightButton().onFalse(Commands.runOnce(Lights::turnOff));
+    // oi.getShootLightButton().onTrue(Commands.runOnce(Lights::turnShoot));
+    // oi.getShootLightButton().onFalse(Commands.runOnce(Lights::turnOff));
 
-    oi.getMarsLightButton().onTrue(Commands.runOnce(Lights::turnMars));
-    oi.getMarsLightButton().onFalse(Commands.runOnce(Lights::turnOff));
+    //oi.getMarsLightButton().onTrue(Commands.runOnce(Lights::turnMars));
+    //oi.getMarsLightButton().onFalse(Commands.runOnce(Lights::turnOff));
 
-    oi.getBlueIntakeLightButton().onTrue(Commands.runOnce(Lights::turnIntakeBlue));
-    oi.getBlueIntakeLightButton().onFalse(Commands.runOnce(Lights::turnOff));
+    //oi.getBlueIntakeLightButton().onTrue(Commands.runOnce(Lights::turnIntakeBlue));
+    //oi.getBlueIntakeLightButton().onFalse(Commands.runOnce(Lights::turnOff));
 
-    oi.getRedIntakeLightButton().onTrue(Commands.runOnce(Lights::turnIntakeRed));
-    oi.getRedIntakeLightButton().onFalse(Commands.runOnce(Lights::turnOff));
+    //oi.getRedIntakeLightButton().onTrue(Commands.runOnce(Lights::turnIntakeRed));
+    //oi.getRedIntakeLightButton().onFalse(Commands.runOnce(Lights::turnOff));
   }
 
   /** Use this method to define your commands for autonomous mode. */
