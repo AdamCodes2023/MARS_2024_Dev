@@ -58,9 +58,9 @@ public class ShooterAngle extends SubsystemBase {
     pidControl.setPositionPIDWrappingMinInput(0.0);
 
     // PID coefficients
-    kP = 7.5e-3;
+    kP = 5.0e-3;
     kI = 1e-6;
-    kD = 1e-5;
+    kD = 2e-7;
     kIz = 0;
     kFF = 0.000156;
     kMaxOutput = 1;
@@ -137,27 +137,27 @@ public class ShooterAngle extends SubsystemBase {
   }
 
   public void intakePosition() {
-    smartMotionPosition(181.3/360.0);
+    smartMotionPosition(179.1/360.0);
   }
 
   public void ampPosition() {
-    smartMotionPosition(256.0/360.0);
+    smartMotionPosition(264.0/360.0);
   }
 
   public void speakerPosition() {
-    smartMotionPosition(180 / 360);
+    smartMotionPosition(179.1/360.0);
   }
 
   public boolean atIntakeAlignment() {
-    return absEncoder.getPosition() * 360.0 > 180.3 && absEncoder.getPosition() * 360.0 < 182.3;
+    return getShooterAnglePosition() > 178.1 && getShooterAnglePosition() < 180.1;
   }
 
   public boolean atAmpAlignment() {
-    return absEncoder.getPosition() * 360.0 > 254.0 && absEncoder.getPosition() * 360.0 < 258.0;
+    return getShooterAnglePosition() > 263.0 && getShooterAnglePosition() < 265.0;
   }
 
   public boolean atSpeakerAlignment() {
-    return absEncoder.getPosition() * 360.0 > 178.0 && absEncoder.getPosition() * 360.0 < 182.0;
+    return getShooterAnglePosition() > 178.1 && getShooterAnglePosition() < 180.1;
   }
 
   public boolean atHardStopTop() {

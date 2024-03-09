@@ -13,37 +13,50 @@ public class IntakeIn extends Command {
   private final Index index;
   private final Intake intake;
   private final ShooterAngle shang;
+  private boolean triggered, stage1, stage2, firstTrigger;
 
   /** Creates a new IntakeIn. */
   public IntakeIn(Index index, Intake intake, ShooterAngle shang) {
     this.index = index;
     this.intake = intake;
     this.shang = shang;
+    triggered = false;
+    stage1 = true;
+    stage2 = false;
+    firstTrigger = true;
     addRequirements(index, intake, shang);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    boolean firstTrigger = true;
-    while (!shang.atIntakeAlignment()) {
-      if (firstTrigger) {
-        shang.intakePosition();
-        firstTrigger = false;
-      }
-    }
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    index.runIndex(0.7);
-    if (!intake.hasGamePiece()) {
-      intake.runIntake(-0.7);
+    if (stage1) {
+      if (firstTrigger) {
+        shang.intakePosition();
+        firstTrigger = false;
+      }
+      if (shang.atIntakeAlignment()) {
+        stage1 = false;
+        stage2 = true;
+        firstTrigger = true;
+      }
     }
-    else {
-      intake.stopIntake();
+
+    if (stage2) {
+      if (!intake.hasGamePiece() && !triggered) {
+        index.runIndex(-0.5);
+        intake.runIntake(-0.7);
+      }
+      else {
+        index.stopIndex();
+        intake.stopIntake();
+        triggered = true;
+      }
     }
   }
 
@@ -61,6 +74,9 @@ public class IntakeIn extends Command {
         }
       }
     }
+    triggered = false;
+    stage1 = true;
+    stage2 = false;
   }
 
   // Returns true when the command should end.

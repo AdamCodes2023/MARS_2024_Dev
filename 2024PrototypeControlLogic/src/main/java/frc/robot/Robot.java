@@ -46,7 +46,7 @@ public class Robot extends LoggedRobot {
 
     // lightsTriggered = true;
 
-    Lights.createShuffleboard();
+    //Lights.createShuffleboard();
 
     // from AdvantageKit Robot Configuration docs
     // (https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/docs/START-LOGGING.md#robot-configuration)
@@ -154,9 +154,11 @@ public class Robot extends LoggedRobot {
     }
     */
 
+    /* 
     if (Lights.notUsed) {
       Lights.getAllianceLights();
     }
+    */
   }
 
   @Override
@@ -177,7 +179,7 @@ public class Robot extends LoggedRobot {
       autonomousCommand.schedule();
     }
 
-    Lights.turnMars();
+    //Lights.turnMars();
   }
 
   /** This method is invoked at the start of the teleoperated period. */
@@ -192,7 +194,7 @@ public class Robot extends LoggedRobot {
       autonomousCommand.cancel();
     }
 
-    Lights.notUsed = true;
+    //Lights.notUsed = true;
   }
 
   /** This method is invoked at the start of the test period. */

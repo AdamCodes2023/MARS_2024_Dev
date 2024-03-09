@@ -105,16 +105,6 @@ public class DualJoysticksOI implements OperatorInterface {
   }
 
   @Override
-  public Trigger getIntakeButton() {
-    return translateJoystickButtons[6];
-  }
-
-  @Override
-  public Trigger getOutakeButton() {
-    return translateJoystickButtons[7];
-  }
-
-  @Override
   public double getIntakeSpeed() {
     return -((translateJoystick.getZ() * -1 + 1) * 0.5);
   }
@@ -143,38 +133,31 @@ public class DualJoysticksOI implements OperatorInterface {
 
   @Override
   public Trigger getAprilTagButton() {
-    return rotateJoystickButtons[3];
+    return translateJoystickButtons[6];
   }
 
   @Override
-  public Trigger getShootButton() {
+  public Trigger getShootAmpButton() {
     return rotateJoystickButtons[1];
   }
 
   @Override
-  public Trigger getRedLightButton() {
+  public Trigger getShootSpeakerButton() {
     return rotateJoystickButtons[2];
   }
 
-  /*
   @Override
-  public Trigger getShootLightButton() {
-    return rotateJoystickButtons[3];
-  }
-  */
-
-  @Override
-  public Trigger getMarsLightButton() {
-    return rotateJoystickButtons[4];
-  }
-
-  @Override
-  public Trigger getBlueIntakeLightButton() {
+  public Trigger getShootButton() {
     return rotateJoystickButtons[7];
   }
 
   @Override
-  public Trigger getRedIntakeLightButton() {
-    return rotateJoystickButtons[8];
+  public Trigger getIntakeButton() {
+    return rotateJoystickButtons[3];
+  }
+
+  @Override
+  public Trigger getOutakeButton() {
+    return rotateJoystickButtons[4];
   }
 }

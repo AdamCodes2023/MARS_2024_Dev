@@ -56,17 +56,19 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasGamePiece() {
-    boolean val = !gamePieceProx.get();
+    boolean val = gamePieceProx.get();
     if (val) {
-      if (Lights.notUsed) {
-        Lights.getAllianceIntakeLights();
-        lightsTriggered = false;
-      }
+      //if (Lights.notUsed) {
+        //Lights.getAllianceIntakeLights();
+        //lightsTriggered = false;
+      //}
+      ;
     } else {
-      if (!lightsTriggered) {
-        Lights.notUsed = true;
-        lightsTriggered = true;
-      }
+      //if (!lightsTriggered) {
+        //Lights.notUsed = true;
+        //lightsTriggered = true;
+      //}
+      ;
     }
     return val;
   }

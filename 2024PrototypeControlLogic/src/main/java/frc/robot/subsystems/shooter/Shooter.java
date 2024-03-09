@@ -8,6 +8,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -151,12 +154,27 @@ public class Shooter extends SubsystemBase {
     rightShooter.configMotionSCurveStrength(0);
     rightShooter.setSelectedSensorPosition(
         0.0, ShooterConstants.kPIDLoopIdx, ShooterConstants.kTimeoutMs);
+
+    createShuffleboard();
+  }
+
+  public void createShuffleboard() {
+    ShuffleboardTab tab = Shuffleboard.getTab("SHOOTER");
+    tab.add("SHOOTER", this);
+    //tab.addNumber("SHOOTER_SPEED", this::getShooterSpeed);
   }
 
   public void runShooter(double speed) {
     leftShooter.set(ControlMode.Velocity, -speed);
     rightShooter.set(ControlMode.Velocity, speed);
   }
+
+  /*
+  public double getShooterSpeed() {
+    //return rightShooter.getSelectedSensorVelocity(ShooterConstants.kPIDLoopIdx);
+    //return rightShooter.getSelectedSensorVelocity();
+  }
+  */
 
   @Override
   public void periodic() {

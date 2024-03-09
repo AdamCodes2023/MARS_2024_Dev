@@ -111,25 +111,12 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  public default Trigger getRedLightButton() {
+  public default Trigger getShootAmpButton() {
     return new Trigger(() -> false);
   }
 
-  /*
-  public default Trigger getShootLightButton() {
-    return new Trigger(() -> false);
-  }
-  */
-
-  public default Trigger getMarsLightButton() {
+  public default Trigger getShootSpeakerButton() {
     return new Trigger(() -> false);
   }
 
-  public default Trigger getBlueIntakeLightButton() {
-    return new Trigger(() -> false);
-  }
-
-  public default Trigger getRedIntakeLightButton() {
-    return new Trigger(() -> false);
-  }
 }

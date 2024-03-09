@@ -6,24 +6,25 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.index.Index;
-import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter_angle.ShooterAngle;
 
-public class IntakeOut extends Command {
+public class ShootAmp extends Command {
   private final Index index;
-  private final Intake intake;
   private final ShooterAngle shang;
-  private boolean stage1, stage2, firstTrigger;
+  private final Shooter shooter;
+  private boolean stage1, firstTrigger;
 
-  /** Creates a new IntakeOut. */
-  public IntakeOut(Index index, Intake intake, ShooterAngle shang) {
+  /** Creates a new ShootAmp. */
+  public ShootAmp(Index index, ShooterAngle shang, Shooter shooter) {
     this.index = index;
-    this.intake = intake;
     this.shang = shang;
+    this.shooter = shooter;
+
     stage1 = true;
-    stage2 = false;
     firstTrigger = true;
-    addRequirements(index, intake, shang);
+
+    addRequirements(index, shang, shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -36,39 +37,24 @@ public class IntakeOut extends Command {
   public void execute() {
     if (stage1) {
       if (firstTrigger) {
-        shang.intakePosition();
+        shooter.runShooter(5000.0);
+        shang.ampPosition();
         firstTrigger = false;
       }
-      if (shang.atIntakeAlignment()) {
+      if (shang.atAmpAlignment()) {
         stage1 = false;
-        stage2 = true;
         firstTrigger = true;
+        index.runIndex(-0.7);
       }
     }
-
-    if (stage2) {
-      index.runIndex(0.8);
-      intake.runIntake(0.7);
-    }
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    boolean firstTrigger = true;
     index.stopIndex();
-    intake.stopIntake();
-    if (!intake.hasGamePiece()) {
-      while (!shang.atHardStopBottom()) {
-        if (firstTrigger) {
-          shang.stopMotor();
-          firstTrigger = false;
-        }
-      }
-    }
+    shooter.runShooter(0.0);
     stage1 = true;
-    stage2 = false;
   }
 
   // Returns true when the command should end.

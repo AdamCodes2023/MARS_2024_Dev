@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.team3061.gyro.GyroIO;
@@ -24,6 +25,8 @@ import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeOut;
+import frc.robot.commands.ShootAmp;
+import frc.robot.commands.ShootSpeaker;
 import frc.robot.commands.Stop;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
@@ -313,23 +316,36 @@ public class RobotContainer {
     
     Command intakeInCommand = new IntakeIn(index, intake, shooterAngle);
     Command intakeOutCommand = new IntakeOut(index, intake, shooterAngle);
+    RepeatCommand repeatIn = new RepeatCommand(Commands.runOnce(() -> intakeInCommand.execute()));
+    RepeatCommand repeatOut = new RepeatCommand(Commands.runOnce(() -> intakeOutCommand.execute()));
     //INTAKE TESTING
     oi.getIntakeButton()
-        .onTrue(intakeInCommand);
+        .onTrue(repeatIn);
     oi.getIntakeButton()
-        .onFalse(Commands.runOnce(() -> intakeInCommand.cancel()));
+        .onFalse(Commands.runOnce(() -> repeatIn.cancel()));
     
     oi.getOutakeButton()
-        .onTrue(intakeOutCommand);
+        .onTrue(repeatOut);
     oi.getOutakeButton()
-        .onFalse(Commands.runOnce(() -> intakeOutCommand.cancel()));
+        .onFalse(Commands.runOnce(() -> repeatOut.cancel()));
     
 
     
     //SHOOTER TESTING
-    oi.getShootButton().onTrue(Commands.runOnce(() -> shooter.runShooter(5000.0)));
-    oi.getShootButton().onFalse(Commands.runOnce(() -> shooter.runShooter(0.0)));
+    Command shootAmpCommand = new ShootAmp(index, shooterAngle, shooter);
+    RepeatCommand repeatShootAmp = new RepeatCommand(Commands.runOnce(() -> shootAmpCommand.execute()));
+    oi.getShootAmpButton().onTrue(repeatShootAmp);
+    oi.getShootAmpButton().onFalse(Commands.runOnce(() -> repeatShootAmp.cancel()));
+    oi.getShootAmpButton().onFalse(new FunctionalCommand(shooterAngle::stopMotor, shooterAngle::intakePosition, shooterAngle::stopMotorWithInterrupt, shooterAngle::atIntakeAlignment));
 
+    Command shootSpeakerCommand = new ShootSpeaker(index, shooterAngle, shooter);
+    RepeatCommand repeatShootSpeaker = new RepeatCommand(Commands.runOnce(() -> shootSpeakerCommand.execute()));
+    oi.getShootSpeakerButton().onTrue(repeatShootSpeaker);
+    oi.getShootSpeakerButton().onFalse(Commands.runOnce(() -> repeatShootSpeaker.cancel()));
+    oi.getShootSpeakerButton().onFalse(new FunctionalCommand(shooterAngle::stopMotor, shooterAngle::intakePosition, shooterAngle::stopMotorWithInterrupt, shooterAngle::atIntakeAlignment));
+
+    oi.getShootButton().onTrue(Commands.runOnce(() -> shooter.runShooter(10000.0)));
+    oi.getShootButton().onFalse(Commands.runOnce(() -> shooter.runShooter(0.0)));
 
     // center on apriltags
     // oi.getAprilTagButton().onTrue(new RepeatCommand(Commands.runOnce(() ->
